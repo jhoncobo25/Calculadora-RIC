@@ -1,28 +1,30 @@
-const URL_RIC_JSON = 'https://tu-usuario.github.io/calculadora-electrica-ric/ric_data.json';
+<script>
+  // URL real apuntando a tu repositorio de GitHub
+  const URL_RIC_JSON = 'https://jhoncobo25.github.io/Calculadora-RIC/ric_data.json';
 
-async function cargarDatosRIC() {
-  try {
-    // Intenta obtener los datos actualizados desde GitHub
-    const respuesta = await fetch(URL_RIC_JSON);
-    if (!respuesta.ok) throw new Error('Error al conectar');
-    
-    const datos = await respuesta.json();
-    
-    // Guardar en la memoria local del teléfono/navegador
-    localStorage.setItem('tabla_ric_local', JSON.stringify(datos));
-    console.log('Normativa RIC actualizada correctamente a versión:', datos.version_ric);
-    return datos;
-  } catch (error) {
-    console.warn('Sin conexión o error al actualizar. Usando copia local en memoria...');
-    
-    // Si no hay internet, lee de la memoria del teléfono
-    const datosLocales = localStorage.getItem('tabla_ric_local');
-    return datosLocales ? JSON.parse(datosLocales) : null;
+  async function cargarDatosRIC() {
+    try {
+      // Intenta obtener los datos actualizados desde GitHub
+      const respuesta = await fetch(URL_RIC_JSON);
+      if (!respuesta.ok) throw new Error('Error al conectar');
+      
+      const datos = await respuesta.json();
+      
+      // Guardar en la memoria local del teléfono/navegador
+      localStorage.setItem('tabla_ric_local', JSON.stringify(datos));
+      console.log('Normativa RIC actualizada correctamente a versión:', datos.version_ric);
+      return datos;
+    } catch (error) {
+      console.warn('Sin conexión o error al actualizar. Usando copia local en memoria...');
+      // Si no hay internet, lee de la memoria del teléfono
+      const datosLocales = localStorage.getItem('tabla_ric_local');
+      return datosLocales ? JSON.parse(datosLocales) : null;
+    }
   }
-}
 
-// Ejecutar al cargar la app
-let TABLA_RIC = null;
-window.addEventListener('DOMContentLoaded', async () => {
-  TABLA_RIC = await cargarDatosRIC();
-});
+  let TABLA_RIC = null;
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    TABLA_RIC = await cargarDatosRIC();
+  });
+</script>
