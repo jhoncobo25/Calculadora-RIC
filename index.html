@@ -10,114 +10,279 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <style>
-    :root { --bg: #121826; --card: #1b2438; --accent: #00d2ff; --text: #e0e6ed; --border: #2a364f; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 16px; }
+    :root {
+      --bg: #121826;
+      --card: #1b2438;
+      --accent: #00d2ff;
+      --accent-bt: #4caf50;
+      --accent-mt: #ff9800;
+      --text: #e0e6ed;
+      --border: #2a364f;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 16px;
+    }
     .container { max-width: 600px; margin: 0 auto; }
-    h1 { text-align: center; font-size: 1.4rem; color: var(--accent); }
-    .nav { display: flex; gap: 8px; margin-bottom: 16px; }
-    .nav button { flex: 1; padding: 10px; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .nav button.active { background: var(--accent); color: #000; }
+    h1 { text-align: center; font-size: 1.3rem; color: var(--accent); margin-bottom: 12px; }
+    
+    /* Menú Principal de Nivel (BT vs MT/AT) */
+    .menu-level { display: flex; gap: 8px; margin-bottom: 12px; }
+    .btn-level {
+      flex: 1; padding: 12px; border: 2px solid var(--border); background: var(--card);
+      color: var(--text); border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; text-align: center;
+    }
+    .btn-level.active-bt { border-color: var(--accent-bt); background: #1b3323; color: #81c784; }
+    .btn-level.active-mt { border-color: var(--accent-mt); background: #3b2814; color: #ffb74d; }
+
+    /* Submenú de Cálculos */
+    .subnav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+    .subnav button {
+      flex: 1; min-width: 120px; padding: 8px; background: #0d131f; border: 1px solid var(--border);
+      color: var(--text); border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 500;
+    }
+    .subnav button.active { background: var(--accent); color: #000; font-weight: bold; }
+
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
     .group { margin-bottom: 12px; }
-    label { display: block; font-size: 0.85rem; margin-bottom: 4px; opacity: 0.8; }
-    input, select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: #0d131f; color: #fff; box-sizing: border-box; font-size: 1rem; }
-    .btn-calc { width: 100%; padding: 12px; background: var(--accent); color: #000; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; }
-    .result { margin-top: 16px; padding: 12px; background: #0d131f; border-left: 4px solid var(--accent); border-radius: 4px; }
+    label { display: block; font-size: 0.85rem; margin-bottom: 4px; opacity: 0.85; }
+    input, select {
+      width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border);
+      background: #0d131f; color: #fff; box-sizing: border-box; font-size: 1rem;
+    }
+    .btn-calc {
+      width: 100%; padding: 12px; background: var(--accent); color: #000;
+      border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 8px;
+    }
+    .result { margin-top: 16px; padding: 12px; background: #0d131f; border-left: 4px solid var(--accent); border-radius: 4px; font-size: 0.95rem; }
     .badge { font-size: 0.75rem; background: #2a364f; padding: 2px 6px; border-radius: 4px; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Calculadora Eléctrica <span class="badge" id="ric-version">Cargando...</span></h1>
-  
-  <div class="nav">
-    <button class="active" onclick="switchTab('malla')">Malla a Tierra</button>
-    <button onclick="switchTab('conductor')">Conductores MT/AT</button>
+  <h1>Calculadora Eléctrica RIC <span class="badge" id="ric-version">RIC SEC</span></h1>
+
+  <!-- NIVEL 1: BAJA TENSIÓN vs MEDIA/ALTA TENSIÓN -->
+  <div class="menu-level">
+    <button id="btn-bt" class="btn-level active-bt" onclick="seleccionarNivel('BT')">Baja Tensión (BT)</button>
+    <button id="btn-mt" class="btn-level" onclick="seleccionarNivel('MT')">Media / Alta Tensión</button>
   </div>
 
-  <!-- TAB: MALLA A TIERRA -->
-  <div id="tab-malla" class="card">
-    <h3>Cálculo de Malla a Tierra (Laurent / Niemann)</h3>
+  <!-- SUBMENÚ BAJA TENSIÓN -->
+  <div id="subnav-bt" class="subnav">
+    <button class="active" onclick="switchTabBT('bt-caida')">Caída de Tensión (ΔV)</button>
+    <button onclick="switchTabBT('bt-malla')">Malla BT (RIC N°06)</button>
+  </div>
+
+  <!-- SUBMENÚ MEDIA / ALTA TENSIÓN -->
+  <div id="subnav-mt" class="subnav" style="display:none;">
+    <button class="active" onclick="switchTabMT('mt-malla')">Malla IEEE 80 / RIC</button>
+    <button onclick="switchTabMT('mt-conductor')">Cortocircuito MT/AT</button>
+  </div>
+
+  <!-- ==================== VISTAS BAJA TENSIÓN ==================== -->
+  
+  <!-- BT 1: Caída de Tensión -->
+  <div id="view-bt-caida" class="card">
+    <h3>Caída de Tensión y Sección (RIC N°03)</h3>
     <div class="group">
-      <label>Resistividad del Suelo ρ (Ω·m):</label>
-      <input type="number" id="rho" value="100">
+      <label>Sistema:</label>
+      <select id="bt-sistema">
+        <option value="220">Monofásico (220 V)</option>
+        <option value="380">Trifásico (380 V)</option>
+      </select>
+    </div>
+    <div class="group">
+      <label>Potencia (kW) o Corriente (A):</label>
+      <input type="number" id="bt-potencia" value="5">
+    </div>
+    <div class="group">
+      <label>Longitud del Conductor (m):</label>
+      <input type="number" id="bt-longitud" value="30">
+    </div>
+    <div class="group">
+      <label>Sección Conductor (mm²):</label>
+      <select id="bt-seccion">
+        <option value="2.5">2.5 mm²</option>
+        <option value="4">4.0 mm²</option>
+        <option value="6">6.0 mm²</option>
+        <option value="10">10.0 mm²</option>
+        <option value="16">16.0 mm²</option>
+        <option value="25">25.0 mm²</option>
+      </select>
+    </div>
+    <button class="btn-calc" onclick="calcularCaidaBT()">Calcular Caída de Tensión</button>
+    <div class="result" id="res-bt-caida">Resultado: --</div>
+  </div>
+
+  <!-- BT 2: Malla a Tierra BT -->
+  <div id="view-bt-malla" class="card" style="display:none;">
+    <h3>Resistencia Malla BT / Electrodo (RIC N°06)</h3>
+    <div class="group">
+      <label>Resistividad Terreno ρ (Ω·m):</label>
+      <input type="number" id="bt-rho" value="100">
+    </div>
+    <div class="group">
+      <label>Largo de la Barra / Electrodo (m):</label>
+      <input type="number" id="bt-largo-barra" value="1.5">
+    </div>
+    <button class="btn-calc" onclick="calcularMallaBT()">Calcular Resistencia (R)</button>
+    <div class="result" id="res-bt-malla">Resultado: --</div>
+  </div>
+
+  <!-- ==================== VISTAS MEDIA / ALTA TENSIÓN ==================== -->
+
+  <!-- MT 1: Malla IEEE 80 -->
+  <div id="view-mt-malla" class="card" style="display:none;">
+    <h3>Malla Subestación / MT (Laurent-Niemann)</h3>
+    <div class="group">
+      <label>Resistividad Suelo ρ (Ω·m):</label>
+      <input type="number" id="mt-rho" value="100">
     </div>
     <div class="group">
       <label>Área de la Malla A (m²):</label>
-      <input type="number" id="area" value="100">
+      <input type="number" id="mt-area" value="200">
     </div>
     <div class="group">
-      <label>Largo Total del Conductor L (m):</label>
-      <input type="number" id="largo" value="120">
+      <label>Largo Conductor Enterrado L (m):</label>
+      <input type="number" id="mt-largo" value="250">
     </div>
-    <button class="btn-calc" onclick="calcularMalla()">Calcular Resistencia (Rg)</button>
-    <div class="result" id="res-malla">Resultado: --</div>
+    <button class="btn-calc" onclick="calcularMallaMT()">Calcular Resistencia (Rg)</button>
+    <div class="result" id="res-mt-malla">Resultado: --</div>
   </div>
 
-  <!-- TAB: CONDUCTORES -->
-  <div id="tab-conductor" class="card" style="display:none;">
-    <h3>Sección mínima por Cortocircuito (Adiabático)</h3>
+  <!-- MT 2: Cortocircuito MT/AT -->
+  <div id="view-mt-conductor" class="card" style="display:none;">
+    <h3>Sección Mínima por Cortocircuito Adiabático</h3>
     <div class="group">
-      <label>Corriente de Cortocircuito Icc (kA):</label>
-      <input type="number" id="icc" value="10">
+      <label>Corriente Falla Icc (kA):</label>
+      <input type="number" id="mt-icc" value="12">
     </div>
     <div class="group">
-      <label>Tiempo de Falla t (segundos):</label>
-      <input type="number" id="tiempo" value="0.5" step="0.1">
+      <label>Tiempo de Desconexión t (s):</label>
+      <input type="number" id="mt-tiempo" value="0.5" step="0.1">
     </div>
     <div class="group">
-      <label>Material Conductor:</label>
-      <select id="material">
-        <option value="143">Cobre (XLPE/EPR) - k=143</option>
-        <option value="94">Aluminio (XLPE/EPR) - k=94</option>
+      <label>Aislamiento / Material:</label>
+      <select id="mt-k">
+        <option value="143">Cobre XLPE/EPR (k=143)</option>
+        <option value="94">Aluminio XLPE/EPR (k=94)</option>
       </select>
     </div>
-    <button class="btn-calc" onclick="calcularConductor()">Calcular Sección Mínima</button>
-    <div class="result" id="res-conductor">Resultado: --</div>
+    <button class="btn-calc" onclick="calcularConductorMT()">Calcular Sección Mínima</button>
+    <div class="result" id="res-mt-conductor">Resultado: --</div>
   </div>
+
 </div>
 
 <script>
-  let datosRIC = { version: "RIC V1.0", factorSeguridadMalla: 1.1 };
+  let nivelActual = 'BT';
 
-  document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("ric-version").innerText = datosRIC.version;
-  });
+  function seleccionarNivel(nivel) {
+    nivelActual = nivel;
+    document.getElementById('btn-bt').className = 'btn-level ' + (nivel === 'BT' ? 'active-bt' : '');
+    document.getElementById('btn-mt').className = 'btn-level ' + (nivel === 'MT' ? 'active-mt' : '');
 
-  function switchTab(tab) {
-    document.getElementById("tab-malla").style.display = (tab === 'malla') ? 'block' : 'none';
-    document.getElementById("tab-conductor").style.display = (tab === 'conductor') ? 'block' : 'none';
-    
-    const buttons = document.querySelectorAll('.nav button');
-    buttons[0].classList.toggle('active', tab === 'malla');
-    buttons[1].classList.toggle('active', tab === 'conductor');
+    document.getElementById('subnav-bt').style.display = (nivel === 'BT') ? 'flex' : 'none';
+    document.getElementById('subnav-mt').style.display = (nivel === 'MT') ? 'flex' : 'none';
+
+    if (nivel === 'BT') {
+      switchTabBT('bt-caida');
+    } else {
+      switchTabMT('mt-malla');
+    }
   }
 
-  function calcularMalla() {
-    const rho = parseFloat(document.getElementById("rho").value);
-    const A = parseFloat(document.getElementById("area").value);
-    const L = parseFloat(document.getElementById("largo").value);
+  function ocultarTodasLasVistas() {
+    const vistas = ['view-bt-caida', 'view-bt-malla', 'view-mt-malla', 'view-mt-conductor'];
+    vistas.forEach(id => document.getElementById(id).style.display = 'none');
+  }
 
-    if(!rho || !A || !L) return;
+  function switchTabBT(tabId) {
+    ocultarTodasLasVistas();
+    document.getElementById('view-' + tabId).style.display = 'block';
+    
+    const btButtons = document.querySelectorAll('#subnav-bt button');
+    btButtons[0].classList.toggle('active', tabId === 'bt-caida');
+    btButtons[1].classList.toggle('active', tabId === 'bt-malla');
+  }
+
+  function switchTabMT(tabId) {
+    ocultarTodasLasVistas();
+    document.getElementById('view-' + tabId).style.display = 'block';
+
+    const mtButtons = document.querySelectorAll('#subnav-mt button');
+    mtButtons[0].classList.toggle('active', tabId === 'mt-malla');
+    mtButtons[1].classList.toggle('active', tabId === 'mt-conductor');
+  }
+
+  // --- CÁLCULOS BAJA TENSIÓN ---
+  function calcularCaidaBT() {
+    const V = parseFloat(document.getElementById("bt-sistema").value);
+    const P = parseFloat(document.getElementById("bt-potencia").value) * 1000; // a Watts
+    const L = parseFloat(document.getElementById("bt-longitud").value);
+    const S = parseFloat(document.getElementById("bt-seccion").value);
+
+    if (!P || !L || !S) return;
+
+    const rhoCu = 0.018; // Resistencia específica cobre
+    const I = (V === 220) ? (P / V) : (P / (Math.sqrt(3) * V));
+    
+    // ΔV % = (2 * L * I * rho / S) / V * 100
+    const K = (V === 220) ? 2 : Math.sqrt(3);
+    const deltaV = (K * L * I * rhoCu) / S;
+    const porcentaje = (deltaV / V) * 100;
+
+    let estado = porcentaje <= 3 ? "🟢 Cumple RIC N°03 (≤ 3%)" : "🔴 Excede límite RIC (> 3%)";
+
+    document.getElementById("res-bt-caida").innerHTML = 
+      `<strong>Corriente estimada:</strong> ${I.toFixed(1)} A<br>` +
+      `<strong>Caída de Tensión:</strong> ${deltaV.toFixed(2)} V (${porcentaje.toFixed(2)}%)<br>` +
+      `<small>${estado}</small>`;
+  }
+
+  function calcularMallaBT() {
+    const rho = parseFloat(document.getElementById("bt-rho").value);
+    const L = parseFloat(document.getElementById("bt-largo-barra").value);
+
+    if (!rho || !L) return;
+
+    // R = rho / (2 * pi * L) * ln(4L / d) aproximadamente para 1 barra
+    const R = (rho / (2 * Math.PI * L)) * Math.log((4 * L) / 0.016);
+
+    document.getElementById("res-bt-malla").innerHTML = 
+      `<strong>Resistencia Estimada Electrodo:</strong> ${R.toFixed(2)} Ω`;
+  }
+
+  // --- CÁLCULOS MEDIA / ALTA TENSIÓN ---
+  function calcularMallaMT() {
+    const rho = parseFloat(document.getElementById("mt-rho").value);
+    const A = parseFloat(document.getElementById("mt-area").value);
+    const L = parseFloat(document.getElementById("mt-largo").value);
+
+    if (!rho || !A || !L) return;
 
     const r = Math.sqrt(A / Math.PI);
-    const Rg = rho * ((1 / (4 * r)) + (1 / L)) * datosRIC.factorSeguridadMalla;
+    const Rg = rho * ((1 / (4 * r)) + (1 / L));
 
-    document.getElementById("res-malla").innerHTML = 
-      `<strong>Resistencia Estimada (Rg):</strong> ${Rg.toFixed(2)} Ω`;
+    document.getElementById("res-mt-malla").innerHTML = 
+      `<strong>Resistencia Malla MT (Rg):</strong> ${Rg.toFixed(2)} Ω`;
   }
 
-  function calcularConductor() {
-    const Icc = parseFloat(document.getElementById("icc").value) * 1000;
-    const t = parseFloat(document.getElementById("tiempo").value);
-    const k = parseFloat(document.getElementById("material").value);
+  function calcularConductorMT() {
+    const Icc = parseFloat(document.getElementById("mt-icc").value) * 1000;
+    const t = parseFloat(document.getElementById("mt-tiempo").value);
+    const k = parseFloat(document.getElementById("mt-k").value);
 
-    if(!Icc || !t || !k) return;
+    if (!Icc || !t || !k) return;
 
     const S = (Icc * Math.sqrt(t)) / k;
 
-    document.getElementById("res-conductor").innerHTML = 
+    document.getElementById("res-mt-conductor").innerHTML = 
       `<strong>Sección Mínima Requerida:</strong> ${S.toFixed(2)} mm²`;
   }
 </script>
