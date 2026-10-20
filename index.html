@@ -52,4 +52,379 @@
       padding-bottom: 6px; margin-top: 16px; margin-bottom: 12px; font-weight: bold;
     }
     .group { margin-bottom: 12px; }
-    label { display: block; font-size: 0.85rem; margin-bottom: 
+    label { display: block; font-size: 0.85rem; margin-bottom: 4px; opacity: 0.85; }
+    input, select {
+      width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border);
+      background: #0d131f; color: #fff; box-sizing: border-box; font-size: 1rem;
+    }
+    .btn-calc {
+      width: 100%; padding: 12px; background: var(--accent); color: #000;
+      border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 8px;
+    }
+    .result { margin-top: 16px; padding: 12px; background: #0d131f; border-left: 4px solid var(--accent); border-radius: 4px; font-size: 0.92rem; line-height: 1.5; }
+    .badge { font-size: 0.75rem; background: #2a364f; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculadora Eléctrica <span class="badge" id="ric-version">RIC SEC</span></h1>
+
+  <!-- SELECTOR DE NIVEL: BT vs MT/AT -->
+  <div class="menu-level">
+    <button id="btn-bt" class="btn-level active-bt" onclick="seleccionarNivel('BT')">Baja Tensión (BT)</button>
+    <button id="btn-mt" class="btn-level" onclick="seleccionarNivel('MT')">Media / Alta Tensión</button>
+  </div>
+
+  <!-- SUBMENÚ BAJA TENSIÓN -->
+  <div id="subnav-bt" class="subnav">
+    <button class="active" onclick="switchTabBT('bt-lum-enchufes')">Luminarias y Enchufes</button>
+    <button onclick="switchTabBT('bt-fuerza')">Fuerza / Motores</button>
+    <button onclick="switchTabBT('bt-malla')">Malla BT (RIC N°06)</button>
+  </div>
+
+  <!-- SUBMENÚ MEDIA / ALTA TENSIÓN -->
+  <div id="subnav-mt" class="subnav" style="display:none;">
+    <button class="active" onclick="switchTabMT('mt-malla')">Malla IEEE 80 / RIC</button>
+    <button onclick="switchTabMT('mt-conductor')">Cortocircuito MT/AT</button>
+  </div>
+
+  <!-- ==================== VISTAS BAJA TENSIÓN ==================== -->
+  
+  <!-- 1. LUMINARIAS Y ENCHUFES -->
+  <div id="view-bt-lum-enchufes" class="card">
+    <h3>Luminarias y Enchufes (RIC N°02 / RIC N°03)</h3>
+    <div class="group">
+      <label>Tipo de Circuito:</label>
+      <select id="bt-lum-tipo">
+        <option value="luminarias">Circuito de Luminarias</option>
+        <option value="enchufes">Circuito de Enchufes Generales (RIC N°02)</option>
+      </select>
+    </div>
+    <div class="group">
+      <label>Potencia Total del Circuito (Watts):</label>
+      <input type="number" id="bt-lum-potencia" value="1500">
+    </div>
+    <div class="group">
+      <label>Tensión Nominal:</label>
+      <select id="bt-lum-voltaje">
+        <option value="220">220 V (Monofásico)</option>
+      </select>
+    </div>
+    <div class="group">
+      <label>Longitud de la Canalización (m):</label>
+      <input type="number" id="bt-lum-longitud" value="25">
+    </div>
+
+    <!-- SECCIÓN CÁLCULO DE CONDUCTOR EN LUMINARIAS Y ENCHUFES -->
+    <div class="section-title">⚡ Cálculo y Selección de Conductor (RIC N°03)</div>
+    <div class="group">
+      <label>Aislamiento del Conductor:</label>
+      <select id="bt-lum-aislamiento">
+        <option value="EVA">EVA / H07Z1-K (Libre de Halógenos - RIC N°03)</option>
+        <option value="PVC">NYA / PVC (RIC N°03)</option>
+      </select>
+    </div>
+    <div class="group">
+      <label>Método de Instalación:</label>
+      <select id="bt-lum-metodo">
+        <option value="B1">En Tubería Embebida / BPI (B1)</option>
+        <option value="F">Al Aire / Escalerilla (F)</option>
+      </select>
+    </div>
+
+    <button class="btn-calc" onclick="calcularLuminariasEnchufesBT()">Calcular Circuito y Conductor</button>
+    <div class="result" id="res-bt-lum-enchufes">Resultado: --</div>
+  </div>
+
+  <!-- 2. FUERZA / MOTORES -->
+  <div id="view-bt-fuerza" class="card" style="display:none;">
+    <h3>Fuerza y Equipos de Potencia (RIC N°03 / RIC N°04)</h3>
+    <div class="group">
+      <label>Sistema de Alimentación:</label>
+      <select id="bt-fuerza-sistema">
+        <option value="380">Trifásico 380 V</option>
+        <option value="220">Monofásico 220 V</option>
+      </select>
+    </div>
+    <div class="group">
+      <label>Potencia del Motor / Carga:</label>
+      <div style="display: flex; gap: 8px;">
+        <input type="number" id="bt-fuerza-val" value="5" style="flex: 2;">
+        <select id="bt-fuerza-unidad" style="flex: 1;">
+          <option value="kW">kW</option>
+          <option value="HP">HP</option>
+        </select>
+      </div>
+    </div>
+    <div class="group">
+      <label>Factor de Potencia (cos φ):</label>
+      <input type="number" id="bt-fuerza-cos" value="0.85" step="0.01">
+    </div>
+    <div class="group">
+      <label>Longitud de Alimentación (m):</label>
+      <input type="number" id="bt-fuerza-longitud" value="35">
+    </div>
+
+    <!-- SECCIÓN CÁLCULO DE CONDUCTOR EN FUERZA -->
+    <div class="section-title">⚡ Cálculo y Selección de Conductor (RIC N°03)</div>
+    <div class="group">
+      <label>Tipo de Conductor:</label>
+      <select id="bt-fuerza-tipo-cond">
+        <option value="Cu">Cobre (Cu)</option>
+        <option value="Al">Aluminio (Al) - Para > 16 mm²</option>
+      </select>
+    </div>
+    <div class="group">
+      <label>Aislamiento:</label>
+      <select id="bt-fuerza-aislam">
+        <option value="XLPE">XLPE / RZ1-K (90°C Libre Halógenos)</option>
+        <option value="EVA">EVA (90°C)</option>
+        <option value="PVC">PVC / Superenflex (70°C)</option>
+      </select>
+    </div>
+
+    <button class="btn-calc" onclick="calcularFuerzaBT()">Calcular Circuito y Conductor</button>
+    <div class="result" id="res-bt-fuerza">Resultado: --</div>
+  </div>
+
+  <!-- 3. MALLA BT -->
+  <div id="view-bt-malla" class="card" style="display:none;">
+    <h3>Malla a Tierra BT / Servicio y Protección (RIC N°06)</h3>
+    <div class="group">
+      <label>Resistividad del Terreno ρ (Ω·m):</label>
+      <input type="number" id="bt-rho" value="100">
+    </div>
+    <div class="group">
+      <label>Longitud de la Barra Electrodo (m):</label>
+      <input type="number" id="bt-largo-barra" value="1.5">
+    </div>
+
+    <!-- SECCIÓN CÁLCULO DE CONDUCTOR DE TIERRA -->
+    <div class="section-title">⚡ Cálculo de Conductor de Tierra / Puesta a Tierra</div>
+    <div class="group">
+      <label>Corriente de Falla a Tierra Estimada (A):</label>
+      <input type="number" id="bt-malla-ifalla" value="1500">
+    </div>
+    <div class="group">
+      <label>Tiempo de Desconexión de Protección (s):</label>
+      <input type="number" id="bt-malla-tiempo" value="0.2" step="0.1">
+    </div>
+
+    <button class="btn-calc" onclick="calcularMallaBT()">Calcular Malla y Conductor Tierra</button>
+    <div class="result" id="res-bt-malla">Resultado: --</div>
+  </div>
+
+  <!-- ==================== VISTAS MEDIA / ALTA TENSIÓN ==================== -->
+
+  <div id="view-mt-malla" class="card" style="display:none;">
+    <h3>Malla Subestación / MT (Laurent-Niemann / IEEE 80)</h3>
+    <div class="group">
+      <label>Resistividad Suelo ρ (Ω·m):</label>
+      <input type="number" id="mt-rho" value="100">
+    </div>
+    <div class="group">
+      <label>Área de la Malla A (m²):</label>
+      <input type="number" id="mt-area" value="200">
+    </div>
+    <div class="group">
+      <label>Largo Conductor Enterrado L (m):</label>
+      <input type="number" id="mt-largo" value="250">
+    </div>
+
+    <div class="section-title">⚡ Cálculo Conductor de Malla (IEEE Std 80)</div>
+    <div class="group">
+      <label>Corriente de Falla Icc (kA):</label>
+      <input type="number" id="mt-icc-malla" value="10">
+    </div>
+
+    <button class="btn-calc" onclick="calcularMallaMT()">Calcular Malla y Conductor</button>
+    <div class="result" id="res-mt-malla">Resultado: --</div>
+  </div>
+
+  <div id="view-mt-conductor" class="card" style="display:none;">
+    <h3>Cálculo de Conductor Alimentador MT / AT</h3>
+    <div class="group">
+      <label>Corriente Falla Icc (kA):</label>
+      <input type="number" id="mt-icc" value="12">
+    </div>
+    <div class="group">
+      <label>Tiempo de Desconexión t (s):</label>
+      <input type="number" id="mt-tiempo" value="0.5" step="0.1">
+    </div>
+    <div class="group">
+      <label>Material Conductor y Aislamiento:</label>
+      <select id="mt-k">
+        <option value="143">Cobre XLPE/EPR (k=143)</option>
+        <option value="94">Aluminio XLPE/EPR (k=94)</option>
+      </select>
+    </div>
+    <button class="btn-calc" onclick="calcularConductorMT()">Calcular Sección Mínima MT</button>
+    <div class="result" id="res-mt-conductor">Resultado: --</div>
+  </div>
+
+</div>
+
+<script>
+  const tablaSeccionesCu = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120];
+
+  function seleccionarNivel(nivel) {
+    document.getElementById('btn-bt').className = 'btn-level ' + (nivel === 'BT' ? 'active-bt' : '');
+    document.getElementById('btn-mt').className = 'btn-level ' + (nivel === 'MT' ? 'active-mt' : '');
+
+    document.getElementById('subnav-bt').style.display = (nivel === 'BT') ? 'flex' : 'none';
+    document.getElementById('subnav-mt').style.display = (nivel === 'MT') ? 'flex' : 'none';
+
+    if (nivel === 'BT') switchTabBT('bt-lum-enchufes');
+    else switchTabMT('mt-malla');
+  }
+
+  function ocultarTodasLasVistas() {
+    const vistas = ['view-bt-lum-enchufes', 'view-bt-fuerza', 'view-bt-malla', 'view-mt-malla', 'view-mt-conductor'];
+    vistas.forEach(id => document.getElementById(id).style.display = 'none');
+  }
+
+  function switchTabBT(tabId) {
+    ocultarTodasLasVistas();
+    document.getElementById('view-' + tabId).style.display = 'block';
+    
+    const btButtons = document.querySelectorAll('#subnav-bt button');
+    btButtons[0].classList.toggle('active', tabId === 'bt-lum-enchufes');
+    btButtons[1].classList.toggle('active', tabId === 'bt-fuerza');
+    btButtons[2].classList.toggle('active', tabId === 'bt-malla');
+  }
+
+  function switchTabMT(tabId) {
+    ocultarTodasLasVistas();
+    document.getElementById('view-' + tabId).style.display = 'block';
+
+    const mtButtons = document.querySelectorAll('#subnav-mt button');
+    mtButtons[0].classList.toggle('active', tabId === 'mt-malla');
+    mtButtons[1].classList.toggle('active', tabId === 'mt-conductor');
+  }
+
+  // --- CÁLCULO LUMINARIAS Y ENCHUFES ---
+  function calcularLuminariasEnchufesBT() {
+    const tipo = document.getElementById("bt-lum-tipo").value;
+    const P = parseFloat(document.getElementById("bt-lum-potencia").value);
+    const V = parseFloat(document.getElementById("bt-lum-voltaje").value);
+    const L = parseFloat(document.getElementById("bt-lum-longitud").value);
+
+    if (!P || !L) return;
+
+    const I = P / V;
+    const rhoCu = 0.018;
+
+    let seccionMinimaNorma = (tipo === 'enchufes') ? 2.5 : 1.5;
+    const seccionCalcDV = (2 * L * I * rhoCu) / (0.03 * V);
+
+    let seccionComercial = Math.max(seccionMinimaNorma, seccionCalcDV);
+    let seccionElegida = tablaSeccionesCu.find(s => s >= seccionComercial) || 120;
+
+    const deltaVReal = (2 * L * I * rhoCu) / seccionElegida;
+    const porcentajeReal = (deltaVReal / V) * 100;
+
+    let disyuntor = I <= 8 ? "10 A" : (I <= 13 ? "16 A" : "20 A");
+    let dif = tipo === 'enchufes' ? "<br><strong>Protección Diferencial:</strong> Obligatoria 2x25A 30mA (RIC N°02)" : "";
+
+    document.getElementById("res-bt-lum-enchufes").innerHTML = 
+      `<strong>Corriente de Servicio (I):</strong> ${I.toFixed(2)} A<br>` +
+      `<strong>📐 Conductor Recomendado (RIC N°03):</strong> ${seccionElegida} mm² Cu<br>` +
+      `<strong>Caída de Tensión Real:</strong> ${deltaVReal.toFixed(2)} V (${porcentajeReal.toFixed(2)}%) - 🟢 Cumple RIC<br>` +
+      `<strong>Disyuntor Sugerido:</strong> Termomagnético ${disyuntor} (Curva C)` + dif;
+  }
+
+  // --- CÁLCULO FUERZA Y CONDUCTOR ---
+  function calcularFuerzaBT() {
+    const sistema = parseFloat(document.getElementById("bt-fuerza-sistema").value);
+    let valPotencia = parseFloat(document.getElementById("bt-fuerza-val").value);
+    const unidad = document.getElementById("bt-fuerza-unidad").value;
+    const cosPhi = parseFloat(document.getElementById("bt-fuerza-cos").value);
+    const L = parseFloat(document.getElementById("bt-fuerza-longitud").value);
+
+    if (!valPotencia || !L || !cosPhi) return;
+
+    const P = (unidad === 'HP') ? (valPotencia * 0.7457 * 1000) : (valPotencia * 1000);
+
+    let I = 0;
+    let K = 2;
+    if (sistema === 380) {
+      I = P / (Math.sqrt(3) * sistema * cosPhi);
+      K = Math.sqrt(3);
+    } else {
+      I = P / (sistema * cosPhi);
+      K = 2;
+    }
+
+    const Idiseno = I * 1.25;
+    const rhoCu = 0.018;
+
+    const seccionCalcDV = (K * L * Idiseno * rhoCu) / (0.03 * sistema);
+
+    let seccionComercial = Math.max(2.5, seccionCalcDV);
+    let seccionElegida = tablaSeccionesCu.find(s => s >= seccionComercial) || 120;
+
+    const deltaVReal = (K * L * I * rhoCu) / seccionElegida;
+    const porcentajeReal = (deltaVReal / sistema) * 100;
+
+    document.getElementById("res-bt-fuerza").innerHTML = 
+      `<strong>Corriente Nominal (In):</strong> ${I.toFixed(2)} A (I. Diseño: ${Idiseno.toFixed(2)} A)<br>` +
+      `<strong>📐 Conductor Recomendado (RIC N°03/N°04):</strong> ${seccionElegida} mm² Cu<br>` +
+      `<strong>Caída de Tensión Real:</strong> ${deltaVReal.toFixed(2)} V (${porcentajeReal.toFixed(2)}%) - 🟢 Cumple RIC<br>` +
+      `<strong>Protección Motor:</strong> Guardamotor o Disyuntor Curva D ajustado a ${I.toFixed(1)} A`;
+  }
+
+  // --- CÁLCULO MALLA Y CONDUCTOR DE TIERRA ---
+  function calcularMallaBT() {
+    const rho = parseFloat(document.getElementById("bt-rho").value);
+    const L = parseFloat(document.getElementById("bt-largo-barra").value);
+    const Ifalla = parseFloat(document.getElementById("bt-malla-ifalla").value);
+    const t = parseFloat(document.getElementById("bt-malla-tiempo").value);
+
+    if (!rho || !L) return;
+
+    const R = (rho / (2 * Math.PI * L)) * Math.log((4 * L) / 0.016);
+
+    let seccionTierra = 6;
+    if (Ifalla && t) {
+      const sCalc = (Ifalla * Math.sqrt(t)) / 143;
+      seccionTierra = Math.max(6, Math.min(120, tablaSeccionesCu.find(s => s >= sCalc) || 6));
+    }
+
+    document.getElementById("res-bt-malla").innerHTML = 
+      `<strong>Resistencia Estimada Electrodo:</strong> ${R.toFixed(2)} Ω<br>` +
+      `<strong>📐 Conductor Puesta a Tierra Mínimo:</strong> ${seccionTierra} mm² Cu Desnudo (RIC N°06)`;
+  }
+
+  function calcularMallaMT() {
+    const rho = parseFloat(document.getElementById("mt-rho").value);
+    const A = parseFloat(document.getElementById("mt-area").value);
+    const L = parseFloat(document.getElementById("mt-largo").value);
+    const Icc = parseFloat(document.getElementById("mt-icc-malla").value) * 1000;
+
+    if (!rho || !A || !L) return;
+
+    const r = Math.sqrt(A / Math.PI);
+    const Rg = rho * ((1 / (4 * r)) + (1 / L));
+
+    const sCalc = (Icc * Math.sqrt(0.5)) / 143;
+    let seccionElegida = tablaSeccionesCu.find(s => s >= sCalc) || 120;
+
+    document.getElementById("res-mt-malla").innerHTML = 
+      `<strong>Resistencia Malla MT (Rg):</strong> ${Rg.toFixed(2)} Ω<br>` +
+      `<strong>📐 Conductor de Malla Subterránea:</strong> ${seccionElegida} mm² Cu Desnudo`;
+  }
+
+  function calcularConductorMT() {
+    const Icc = parseFloat(document.getElementById("mt-icc").value) * 1000;
+    const t = parseFloat(document.getElementById("mt-tiempo").value);
+    const k = parseFloat(document.getElementById("mt-k").value);
+    if (!Icc || !t || !k) return;
+    const S = (Icc * Math.sqrt(t)) / k;
+    let seccionElegida = tablaSeccionesCu.find(s => s >= S) || S.toFixed(1);
+    document.getElementById("res-mt-conductor").innerHTML = `<strong>📐 Sección Mínima Conductor MT:</strong> ${seccionElegida} mm²`;
+  }
+</script>
+
+</body>
+</html>
