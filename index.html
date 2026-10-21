@@ -1,430 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora Eléctrica RIC</title>
-  
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Calc RIC">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <style>
-    :root {
-      --bg: #121826;
-      --card: #1b2438;
-      --accent: #00d2ff;
-      --accent-bt: #4caf50;
-      --accent-mt: #ff9800;
-      --text: #e0e6ed;
-      --border: #2a364f;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 16px;
-    }
-    .container { max-width: 600px; margin: 0 auto; }
-    h1 { text-align: center; font-size: 1.3rem; color: var(--accent); margin-bottom: 12px; }
-    
-    /* Menú Principal */
-    .menu-level { display: flex; gap: 8px; margin-bottom: 12px; }
-    .btn-level {
-      flex: 1; padding: 12px; border: 2px solid var(--border); background: var(--card);
-      color: var(--text); border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; text-align: center;
-    }
-    .btn-level.active-bt { border-color: var(--accent-bt); background: #1b3323; color: #81c784; }
-    .btn-level.active-mt { border-color: var(--accent-mt); background: #3b2814; color: #ffb74d; }
-
-    /* Submenú */
-    .subnav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
-    .subnav button {
-      flex: 1; min-width: 100px; padding: 8px; background: #0d131f; border: 1px solid var(--border);
-      color: var(--text); border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500;
-    }
-    .subnav button.active { background: var(--accent); color: #000; font-weight: bold; }
-
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .section-title {
-      font-size: 1rem; color: var(--accent); border-bottom: 1px solid var(--border);
-      padding-bottom: 6px; margin-top: 16px; margin-bottom: 12px; font-weight: bold;
-    }
-    .group { margin-bottom: 12px; }
-    label { display: block; font-size: 0.85rem; margin-bottom: 4px; opacity: 0.85; }
-    input, select {
-      width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border);
-      background: #0d131f; color: #fff; box-sizing: border-box; font-size: 1rem;
-    }
-    .btn-calc {
-      width: 100%; padding: 12px; background: var(--accent); color: #000;
-      border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 8px;
-    }
-    .result { margin-top: 16px; padding: 12px; background: #0d131f; border-left: 4px solid var(--accent); border-radius: 4px; font-size: 0.92rem; line-height: 1.5; }
-    .badge { font-size: 0.75rem; background: #2a364f; padding: 2px 6px; border-radius: 4px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora Eléctrica RIC · Chile</title>
+<style>
+:root{--bg:#f3f5f9;--card:#fff;--tx:#14213d;--mu:#5b6678;--bd:#d8dee9;--ac:#0b6fd6;--in:#f7f9fc;--ok:#137a3a;--okb:#e3f5ea;--bad:#b3261e;--badb:#fde8e6;--wr:#9a5b00;--wrb:#fff1d6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--card:#18223a;--tx:#e6ebf5;--mu:#9aa6bd;--bd:#2a3858;--ac:#4cb3ff;--in:#0f1830;--ok:#6fdc97;--okb:#12301f;--bad:#ff8a80;--badb:#3a1a18;--wr:#ffc266;--wrb:#3a2b0e}}
+:root[data-theme="dark"]{--bg:#0f1624;--card:#18223a;--tx:#e6ebf5;--mu:#9aa6bd;--bd:#2a3858;--ac:#4cb3ff;--in:#0f1830;--ok:#6fdc97;--okb:#12301f;--bad:#ff8a80;--badb:#3a1a18;--wr:#ffc266;--wrb:#3a2b0e}
+html,body{height:auto}body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:14px}
+.w{max-width:680px;margin:0 auto}h1{font-size:1.25rem;margin:4px 0}.sub{color:var(--mu);font-size:.8rem;margin:0 0 10px}
+.pj{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}nav button{flex:none;padding:9px 12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font-size:.82rem;cursor:pointer}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px}
+.card h2{font-size:1rem;margin:0 0 10px}.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.g,.pj{grid-template-columns:1fr}}
+label{display:block;font-size:.75rem;color:var(--mu);margin-bottom:3px}
+input,select{width:100%;box-sizing:border-box;padding:9px;border:1px solid var(--bd);border-radius:7px;background:var(--in);color:var(--tx);font-size:1rem}
+.r{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-bottom:1px solid var(--bd);font-size:.88rem}.r b{text-align:right}
+.r.ok{background:var(--okb);color:var(--ok)}.r.bad{background:var(--badb);color:var(--bad)}.r.wr{background:var(--wrb);color:var(--wr)}.r.big b{font-size:1.05rem}
+.n{font-size:.76rem;color:var(--mu);line-height:1.45;margin:8px 2px 0}
+.res{margin-top:12px;border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.fo{font-size:.74rem;color:var(--mu);line-height:1.5}.fo b{color:var(--tx)}
+.bt{padding:9px 12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;cursor:pointer;font-size:.82rem}
+@media print{nav,.bt,.no{display:none}.panel{display:block!important}body{background:#fff;color:#000}}
+</style>
 </head>
 <body>
-
-<div class="container">
-  <h1>Calculadora Eléctrica <span class="badge" id="ric-version">RIC SEC</span></h1>
-
-  <!-- SELECTOR DE NIVEL: BT vs MT/AT -->
-  <div class="menu-level">
-    <button id="btn-bt" class="btn-level active-bt" onclick="seleccionarNivel('BT')">Baja Tensión (BT)</button>
-    <button id="btn-mt" class="btn-level" onclick="seleccionarNivel('MT')">Media / Alta Tensión</button>
-  </div>
-
-  <!-- SUBMENÚ BAJA TENSIÓN -->
-  <div id="subnav-bt" class="subnav">
-    <button class="active" onclick="switchTabBT('bt-lum-enchufes')">Luminarias y Enchufes</button>
-    <button onclick="switchTabBT('bt-fuerza')">Fuerza / Motores</button>
-    <button onclick="switchTabBT('bt-malla')">Malla BT (RIC N°06)</button>
-  </div>
-
-  <!-- SUBMENÚ MEDIA / ALTA TENSIÓN -->
-  <div id="subnav-mt" class="subnav" style="display:none;">
-    <button class="active" onclick="switchTabMT('mt-malla')">Malla IEEE 80 / RIC</button>
-    <button onclick="switchTabMT('mt-conductor')">Cortocircuito MT/AT</button>
-  </div>
-
-  <!-- ==================== VISTAS BAJA TENSIÓN ==================== -->
-  
-  <!-- 1. LUMINARIAS Y ENCHUFES -->
-  <div id="view-bt-lum-enchufes" class="card">
-    <h3>Luminarias y Enchufes (RIC N°02 / RIC N°03)</h3>
-    <div class="group">
-      <label>Tipo de Circuito:</label>
-      <select id="bt-lum-tipo">
-        <option value="luminarias">Circuito de Luminarias</option>
-        <option value="enchufes">Circuito de Enchufes Generales (RIC N°02)</option>
-      </select>
-    </div>
-    <div class="group">
-      <label>Potencia Total del Circuito (Watts):</label>
-      <input type="number" id="bt-lum-potencia" value="1500">
-    </div>
-    <div class="group">
-      <label>Tensión Nominal:</label>
-      <select id="bt-lum-voltaje">
-        <option value="220">220 V (Monofásico)</option>
-      </select>
-    </div>
-    <div class="group">
-      <label>Longitud de la Canalización (m):</label>
-      <input type="number" id="bt-lum-longitud" value="25">
-    </div>
-
-    <!-- SECCIÓN CÁLCULO DE CONDUCTOR EN LUMINARIAS Y ENCHUFES -->
-    <div class="section-title">⚡ Cálculo y Selección de Conductor (RIC N°03)</div>
-    <div class="group">
-      <label>Aislamiento del Conductor:</label>
-      <select id="bt-lum-aislamiento">
-        <option value="EVA">EVA / H07Z1-K (Libre de Halógenos - RIC N°03)</option>
-        <option value="PVC">NYA / PVC (RIC N°03)</option>
-      </select>
-    </div>
-    <div class="group">
-      <label>Método de Instalación:</label>
-      <select id="bt-lum-metodo">
-        <option value="B1">En Tubería Embebida / BPI (B1)</option>
-        <option value="F">Al Aire / Escalerilla (F)</option>
-      </select>
-    </div>
-
-    <button class="btn-calc" onclick="calcularLuminariasEnchufesBT()">Calcular Circuito y Conductor</button>
-    <div class="result" id="res-bt-lum-enchufes">Resultado: --</div>
-  </div>
-
-  <!-- 2. FUERZA / MOTORES -->
-  <div id="view-bt-fuerza" class="card" style="display:none;">
-    <h3>Fuerza y Equipos de Potencia (RIC N°03 / RIC N°04)</h3>
-    <div class="group">
-      <label>Sistema de Alimentación:</label>
-      <select id="bt-fuerza-sistema">
-        <option value="380">Trifásico 380 V</option>
-        <option value="220">Monofásico 220 V</option>
-      </select>
-    </div>
-    <div class="group">
-      <label>Potencia del Motor / Carga:</label>
-      <div style="display: flex; gap: 8px;">
-        <input type="number" id="bt-fuerza-val" value="5" style="flex: 2;">
-        <select id="bt-fuerza-unidad" style="flex: 1;">
-          <option value="kW">kW</option>
-          <option value="HP">HP</option>
-        </select>
-      </div>
-    </div>
-    <div class="group">
-      <label>Factor de Potencia (cos φ):</label>
-      <input type="number" id="bt-fuerza-cos" value="0.85" step="0.01">
-    </div>
-    <div class="group">
-      <label>Longitud de Alimentación (m):</label>
-      <input type="number" id="bt-fuerza-longitud" value="35">
-    </div>
-
-    <!-- SECCIÓN CÁLCULO DE CONDUCTOR EN FUERZA -->
-    <div class="section-title">⚡ Cálculo y Selección de Conductor (RIC N°03)</div>
-    <div class="group">
-      <label>Tipo de Conductor:</label>
-      <select id="bt-fuerza-tipo-cond">
-        <option value="Cu">Cobre (Cu)</option>
-        <option value="Al">Aluminio (Al) - Para > 16 mm²</option>
-      </select>
-    </div>
-    <div class="group">
-      <label>Aislamiento:</label>
-      <select id="bt-fuerza-aislam">
-        <option value="XLPE">XLPE / RZ1-K (90°C Libre Halógenos)</option>
-        <option value="EVA">EVA (90°C)</option>
-        <option value="PVC">PVC / Superenflex (70°C)</option>
-      </select>
-    </div>
-
-    <button class="btn-calc" onclick="calcularFuerzaBT()">Calcular Circuito y Conductor</button>
-    <div class="result" id="res-bt-fuerza">Resultado: --</div>
-  </div>
-
-  <!-- 3. MALLA BT -->
-  <div id="view-bt-malla" class="card" style="display:none;">
-    <h3>Malla a Tierra BT / Servicio y Protección (RIC N°06)</h3>
-    <div class="group">
-      <label>Resistividad del Terreno ρ (Ω·m):</label>
-      <input type="number" id="bt-rho" value="100">
-    </div>
-    <div class="group">
-      <label>Longitud de la Barra Electrodo (m):</label>
-      <input type="number" id="bt-largo-barra" value="1.5">
-    </div>
-
-    <!-- SECCIÓN CÁLCULO DE CONDUCTOR DE TIERRA -->
-    <div class="section-title">⚡ Cálculo de Conductor de Tierra / Puesta a Tierra</div>
-    <div class="group">
-      <label>Corriente de Falla a Tierra Estimada (A):</label>
-      <input type="number" id="bt-malla-ifalla" value="1500">
-    </div>
-    <div class="group">
-      <label>Tiempo de Desconexión de Protección (s):</label>
-      <input type="number" id="bt-malla-tiempo" value="0.2" step="0.1">
-    </div>
-
-    <button class="btn-calc" onclick="calcularMallaBT()">Calcular Malla y Conductor Tierra</button>
-    <div class="result" id="res-bt-malla">Resultado: --</div>
-  </div>
-
-  <!-- ==================== VISTAS MEDIA / ALTA TENSIÓN ==================== -->
-
-  <div id="view-mt-malla" class="card" style="display:none;">
-    <h3>Malla Subestación / MT (Laurent-Niemann / IEEE 80)</h3>
-    <div class="group">
-      <label>Resistividad Suelo ρ (Ω·m):</label>
-      <input type="number" id="mt-rho" value="100">
-    </div>
-    <div class="group">
-      <label>Área de la Malla A (m²):</label>
-      <input type="number" id="mt-area" value="200">
-    </div>
-    <div class="group">
-      <label>Largo Conductor Enterrado L (m):</label>
-      <input type="number" id="mt-largo" value="250">
-    </div>
-
-    <div class="section-title">⚡ Cálculo Conductor de Malla (IEEE Std 80)</div>
-    <div class="group">
-      <label>Corriente de Falla Icc (kA):</label>
-      <input type="number" id="mt-icc-malla" value="10">
-    </div>
-
-    <button class="btn-calc" onclick="calcularMallaMT()">Calcular Malla y Conductor</button>
-    <div class="result" id="res-mt-malla">Resultado: --</div>
-  </div>
-
-  <div id="view-mt-conductor" class="card" style="display:none;">
-    <h3>Cálculo de Conductor Alimentador MT / AT</h3>
-    <div class="group">
-      <label>Corriente Falla Icc (kA):</label>
-      <input type="number" id="mt-icc" value="12">
-    </div>
-    <div class="group">
-      <label>Tiempo de Desconexión t (s):</label>
-      <input type="number" id="mt-tiempo" value="0.5" step="0.1">
-    </div>
-    <div class="group">
-      <label>Material Conductor y Aislamiento:</label>
-      <select id="mt-k">
-        <option value="143">Cobre XLPE/EPR (k=143)</option>
-        <option value="94">Aluminio XLPE/EPR (k=94)</option>
-      </select>
-    </div>
-    <button class="btn-calc" onclick="calcularConductorMT()">Calcular Sección Mínima MT</button>
-    <div class="result" id="res-mt-conductor">Resultado: --</div>
-  </div>
-
+<div class="w">
+<h1>Calculadora Eléctrica RIC</h1>
+<p class="sub">Chile · Pliegos Técnicos Normativos RIC (SEC) · IEC 60364-5-52 · IEEE Std 80</p>
+<div class="pj"><div><label>Proyecto</label><input id="pj" type="text" placeholder="Nombre del proyecto"></div><div><label>Calculista / Instalador</label><input id="cl" type="text" placeholder="Nombre y clase de licencia"></div></div>
+<nav id="nav"></nav>
+<div id="panels"></div>
+<div class="card fo no"><button class="bt" onclick="print()">Imprimir memoria de cálculo</button></div>
+<div class="card fo"><b>Marco normativo de referencia.</b> RIC N°01 Empalmes · N°02 Tableros · N°03 Alimentadores y demanda · N°04 Conductores, materiales y canalizaciones · N°05 Protección contra tensiones peligrosas y descargas · N°06 Puesta a tierra y enlace equipotencial · N°18 Presentación de proyectos (memoria de cálculo, caídas de tensión y diseño de tierra) · N°19 Puesta en servicio.<br><br><b>Alcance y límites.</b> Herramienta de apoyo al diseño. Las ampacidades, factores de corrección y límites provienen de tablas referenciales (IEC 60364-5-52) y deben contrastarse con la edición vigente del pliego aplicable. Los valores de resistencia de tierra y la malla MT requieren medición en terreno y validación de un profesional habilitado ante la SEC. No reemplaza el proyecto firmado ni la declaración TE.</div>
 </div>
-
 <script>
-  const tablaSeccionesCu = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120];
-
-  function seleccionarNivel(nivel) {
-    document.getElementById('btn-bt').className = 'btn-level ' + (nivel === 'BT' ? 'active-bt' : '');
-    document.getElementById('btn-mt').className = 'btn-level ' + (nivel === 'MT' ? 'active-mt' : '');
-
-    document.getElementById('subnav-bt').style.display = (nivel === 'BT') ? 'flex' : 'none';
-    document.getElementById('subnav-mt').style.display = (nivel === 'MT') ? 'flex' : 'none';
-
-    if (nivel === 'BT') switchTabBT('bt-lum-enchufes');
-    else switchTabMT('mt-malla');
-  }
-
-  function ocultarTodasLasVistas() {
-    const vistas = ['view-bt-lum-enchufes', 'view-bt-fuerza', 'view-bt-malla', 'view-mt-malla', 'view-mt-conductor'];
-    vistas.forEach(id => document.getElementById(id).style.display = 'none');
-  }
-
-  function switchTabBT(tabId) {
-    ocultarTodasLasVistas();
-    document.getElementById('view-' + tabId).style.display = 'block';
-    
-    const btButtons = document.querySelectorAll('#subnav-bt button');
-    btButtons[0].classList.toggle('active', tabId === 'bt-lum-enchufes');
-    btButtons[1].classList.toggle('active', tabId === 'bt-fuerza');
-    btButtons[2].classList.toggle('active', tabId === 'bt-malla');
-  }
-
-  function switchTabMT(tabId) {
-    ocultarTodasLasVistas();
-    document.getElementById('view-' + tabId).style.display = 'block';
-
-    const mtButtons = document.querySelectorAll('#subnav-mt button');
-    mtButtons[0].classList.toggle('active', tabId === 'mt-malla');
-    mtButtons[1].classList.toggle('active', tabId === 'mt-conductor');
-  }
-
-  // --- CÁLCULO LUMINARIAS Y ENCHUFES ---
-  function calcularLuminariasEnchufesBT() {
-    const tipo = document.getElementById("bt-lum-tipo").value;
-    const P = parseFloat(document.getElementById("bt-lum-potencia").value);
-    const V = parseFloat(document.getElementById("bt-lum-voltaje").value);
-    const L = parseFloat(document.getElementById("bt-lum-longitud").value);
-
-    if (!P || !L) return;
-
-    const I = P / V;
-    const rhoCu = 0.018;
-
-    let seccionMinimaNorma = (tipo === 'enchufes') ? 2.5 : 1.5;
-    const seccionCalcDV = (2 * L * I * rhoCu) / (0.03 * V);
-
-    let seccionComercial = Math.max(seccionMinimaNorma, seccionCalcDV);
-    let seccionElegida = tablaSeccionesCu.find(s => s >= seccionComercial) || 120;
-
-    const deltaVReal = (2 * L * I * rhoCu) / seccionElegida;
-    const porcentajeReal = (deltaVReal / V) * 100;
-
-    let disyuntor = I <= 8 ? "10 A" : (I <= 13 ? "16 A" : "20 A");
-    let dif = tipo === 'enchufes' ? "<br><strong>Protección Diferencial:</strong> Obligatoria 2x25A 30mA (RIC N°02)" : "";
-
-    document.getElementById("res-bt-lum-enchufes").innerHTML = 
-      `<strong>Corriente de Servicio (I):</strong> ${I.toFixed(2)} A<br>` +
-      `<strong>📐 Conductor Recomendado (RIC N°03):</strong> ${seccionElegida} mm² Cu<br>` +
-      `<strong>Caída de Tensión Real:</strong> ${deltaVReal.toFixed(2)} V (${porcentajeReal.toFixed(2)}%) - 🟢 Cumple RIC<br>` +
-      `<strong>Disyuntor Sugerido:</strong> Termomagnético ${disyuntor} (Curva C)` + dif;
-  }
-
-  // --- CÁLCULO FUERZA Y CONDUCTOR ---
-  function calcularFuerzaBT() {
-    const sistema = parseFloat(document.getElementById("bt-fuerza-sistema").value);
-    let valPotencia = parseFloat(document.getElementById("bt-fuerza-val").value);
-    const unidad = document.getElementById("bt-fuerza-unidad").value;
-    const cosPhi = parseFloat(document.getElementById("bt-fuerza-cos").value);
-    const L = parseFloat(document.getElementById("bt-fuerza-longitud").value);
-
-    if (!valPotencia || !L || !cosPhi) return;
-
-    const P = (unidad === 'HP') ? (valPotencia * 0.7457 * 1000) : (valPotencia * 1000);
-
-    let I = 0;
-    let K = 2;
-    if (sistema === 380) {
-      I = P / (Math.sqrt(3) * sistema * cosPhi);
-      K = Math.sqrt(3);
-    } else {
-      I = P / (sistema * cosPhi);
-      K = 2;
-    }
-
-    const Idiseno = I * 1.25;
-    const rhoCu = 0.018;
-
-    const seccionCalcDV = (K * L * Idiseno * rhoCu) / (0.03 * sistema);
-
-    let seccionComercial = Math.max(2.5, seccionCalcDV);
-    let seccionElegida = tablaSeccionesCu.find(s => s >= seccionComercial) || 120;
-
-    const deltaVReal = (K * L * I * rhoCu) / seccionElegida;
-    const porcentajeReal = (deltaVReal / sistema) * 100;
-
-    document.getElementById("res-bt-fuerza").innerHTML = 
-      `<strong>Corriente Nominal (In):</strong> ${I.toFixed(2)} A (I. Diseño: ${Idiseno.toFixed(2)} A)<br>` +
-      `<strong>📐 Conductor Recomendado (RIC N°03/N°04):</strong> ${seccionElegida} mm² Cu<br>` +
-      `<strong>Caída de Tensión Real:</strong> ${deltaVReal.toFixed(2)} V (${porcentajeReal.toFixed(2)}%) - 🟢 Cumple RIC<br>` +
-      `<strong>Protección Motor:</strong> Guardamotor o Disyuntor Curva D ajustado a ${I.toFixed(1)} A`;
-  }
-
-  // --- CÁLCULO MALLA Y CONDUCTOR DE TIERRA ---
-  function calcularMallaBT() {
-    const rho = parseFloat(document.getElementById("bt-rho").value);
-    const L = parseFloat(document.getElementById("bt-largo-barra").value);
-    const Ifalla = parseFloat(document.getElementById("bt-malla-ifalla").value);
-    const t = parseFloat(document.getElementById("bt-malla-tiempo").value);
-
-    if (!rho || !L) return;
-
-    const R = (rho / (2 * Math.PI * L)) * Math.log((4 * L) / 0.016);
-
-    let seccionTierra = 6;
-    if (Ifalla && t) {
-      const sCalc = (Ifalla * Math.sqrt(t)) / 143;
-      seccionTierra = Math.max(6, Math.min(120, tablaSeccionesCu.find(s => s >= sCalc) || 6));
-    }
-
-    document.getElementById("res-bt-malla").innerHTML = 
-      `<strong>Resistencia Estimada Electrodo:</strong> ${R.toFixed(2)} Ω<br>` +
-      `<strong>📐 Conductor Puesta a Tierra Mínimo:</strong> ${seccionTierra} mm² Cu Desnudo (RIC N°06)`;
-  }
-
-  function calcularMallaMT() {
-    const rho = parseFloat(document.getElementById("mt-rho").value);
-    const A = parseFloat(document.getElementById("mt-area").value);
-    const L = parseFloat(document.getElementById("mt-largo").value);
-    const Icc = parseFloat(document.getElementById("mt-icc-malla").value) * 1000;
-
-    if (!rho || !A || !L) return;
-
-    const r = Math.sqrt(A / Math.PI);
-    const Rg = rho * ((1 / (4 * r)) + (1 / L));
-
-    const sCalc = (Icc * Math.sqrt(0.5)) / 143;
-    let seccionElegida = tablaSeccionesCu.find(s => s >= sCalc) || 120;
-
-    document.getElementById("res-mt-malla").innerHTML = 
-      `<strong>Resistencia Malla MT (Rg):</strong> ${Rg.toFixed(2)} Ω<br>` +
-      `<strong>📐 Conductor de Malla Subterránea:</strong> ${seccionElegida} mm² Cu Desnudo`;
-  }
-
-  function calcularConductorMT() {
-    const Icc = parseFloat(document.getElementById("mt-icc").value) * 1000;
-    const t = parseFloat(document.getElementById("mt-tiempo").value);
-    const k = parseFloat(document.getElementById("mt-k").value);
-    if (!Icc || !t || !k) return;
-    const S = (Icc * Math.sqrt(t)) / k;
-    let seccionElegida = tablaSeccionesCu.find(s => s >= S) || S.toFixed(1);
-    document.getElementById("res-mt-conductor").innerHTML = `<strong>📐 Sección Mínima Conductor MT:</strong> ${seccionElegida} mm²`;
-  }
+const STD=[1.5,2.5,4,6,10,16,25,35,50,70,95,120,150,185,240,300],INOM=[6,10,16,20,25,32,40,50,63,80,100,125,160,200,250];
+const AMP={PVC:{B1:{2:[15.5,21,28,36,50,68,89,110,134,171,207,239],3:[13.5,18,24,31,42,56,73,89,108,136,164,188]},C:{2:[19.5,27,36,46,63,85,112,138,168,213,258,299],3:[17.5,24,32,41,57,76,96,119,144,184,223,259]}},
+XLPE:{B1:{2:[19,26,35,45,61,81,106,131,158,200,241,278],3:[17,23,31,40,54,73,95,117,141,179,216,249]},C:{2:[24,33,45,58,80,107,138,171,209,269,328,382],3:[22,30,40,52,71,96,119,147,179,229,278,322]}}};
+const KT={PVC:[[25,1.03],[30,1],[35,.94],[40,.87],[45,.79],[50,.71],[55,.61],[60,.5]],XLPE:[[25,1.02],[30,1],[35,.96],[40,.91],[45,.87],[50,.82],[55,.76],[60,.71]]};
+const KG=[1,1,.8,.7,.65,.6,.57,.54,.52,.5];
+const kt=(a,T)=>{const e=KT[a].find(x=>x[0]>=T);return e?e[1]:0};
+const CAB=[['ais','Aislación',[['PVC','PVC 70 °C'],['XLPE','XLPE / EVA 90 °C (libre de halógenos)']]],['met','Método de instalación',[['B1','B1 · tubo embutido en muro'],['C','C · sobre muro / bandeja']]],['Ta','Temperatura ambiente (°C)',30],['ng','Circuitos agrupados',1],['lim','Caída de tensión máx. (%)',3],['icc','Icc en el tablero (kA)',3],['tcc','Tiempo de despeje (s)',.1]];
+const TABS=[
+['c','Circuito BT','Circuito de alumbrado, enchufes o fuerza',[['tipo','Tipo de circuito',['Alumbrado','Enchufes','Fuerza']],['sis','Sistema',[['220','Monofásico 220 V'],['380','Trifásico 380 V']]],['P','Potencia (W)',1500],['cos','cos φ',.95],['L','Longitud (m)',25],...CAB]],
+['m','Motor','Alimentación de motor (RIC N°03 / N°04)',[['sis','Sistema',[['380','Trifásico 380 V'],['220','Monofásico 220 V']]],['Pm','Potencia en el eje',5],['u','Unidad',['kW','HP']],['eta','Rendimiento η',.88],['cos','cos φ',.85],['arr','Tipo de partida',[['7','Directa (≈7·In)'],['2.5','Estrella-triángulo (≈2,5·In)'],['1.5','Variador / partidor suave (≈1,5·In)']]],['L','Longitud (m)',35],...CAB.map(x=>x[0]=='lim'?['lim','Caída de tensión máx. (%)',5]:x)]],
+['t','Tierra BT','Puesta a tierra y conductor de protección (RIC N°06)',[['rho','Resistividad ρ (Ω·m)',100],['Lb','Largo de barra (m)',1.5],['d','Diámetro de barra (mm)',16],['n','Cantidad de barras',1],['Rmax','R máx. de proyecto (Ω)',20],['Sf','Sección conductor de fase (mm²)',6],['If','Corriente de falla a tierra (A)',1500],['tf','Tiempo de despeje (s)',.2],['Idn','Diferencial IΔn (mA)',30]]],
+['g','Malla MT','Malla de subestación (IEEE Std 80)',[['rho','Resistividad del suelo ρ (Ω·m)',100],['rhos','Resistividad superficial ρs (Ω·m)',3000],['hs','Espesor capa superficial hs (m)',.1],['A','Área de la malla (m²)',200],['L','Conductor enterrado total (m)',250],['h','Profundidad h (m)',.5],['icc','Corriente de falla 3I0 (kA)',10],['sf','Factor de división Sf',.6],['df','Factor de decremento Df',1],['t','Duración de falla (s)',.5],['w','Peso de la persona',[['70','70 kg'],['50','50 kg']]]]],
+['x','Cable MT/AT','Sección mínima por cortocircuito (adiabático)',[['icc','Icc simétrica (kA)',12],['t','Tiempo de despeje (s)',.5],['k','Material y aislación',[['143','Cu XLPE/EPR (k=143)'],['94','Al XLPE/EPR (k=94)'],['115','Cu PVC (k=115)'],['76','Al PVC (k=76)']]]]]];
+const $=id=>document.getElementById(id),f=(x,d=2)=>(+x).toFixed(d).replace('.',',');
+const st=c=>c?'ok':'bad',nx=s=>STD.find(x=>x>=s)||'>300';
+function g(p){const o={};document.querySelectorAll('[id^="'+p+'_"]').forEach(e=>{const k=e.id.slice(p.length+1);o[k]=e.tagName=='SELECT'?(isNaN(e.value)?e.value:+e.value):parseFloat(e.value)});return o}
+const valid=v=>Object.values(v).every(x=>typeof x=='string'||x>0);
+function out(id,rows,note){$('r_'+id).innerHTML='<div class="res">'+rows.map(r=>`<div class="r ${r[2]||''}"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')+'</div>'+(note?`<p class="n">${note}</p>`:'')}
+function cable(o){
+ const th=o.three,tab=AMP[o.ais][o.met][th?3:2],fk=kt(o.ais,o.Ta),fg=KG[Math.min(Math.max(Math.round(o.ng),1),9)],F=fk*fg;
+ if(!F)return{rows:[['Temperatura ambiente','Fuera de tabla (máx. 60 °C)','bad']]};
+ const rho=o.ais=='PVC'?.0225:.0241,sn=Math.sqrt(1-o.cos*o.cos),kd=th?Math.sqrt(3):2,V=th?380:220;
+ const dv=s=>kd*o.I*o.L*(rho/s*1000*o.cos+.08*sn)/1000;
+ const k=o.ais=='PVC'?115:143,sc=o.icc*1000*Math.sqrt(o.tcc)/k;
+ const ia=STD.findIndex((s,i)=>i<12&&tab[i]*F>=o.Ic),iv=STD.findIndex(s=>dv(s)/V*100<=o.lim),ic=STD.findIndex(s=>s>=sc),im=STD.indexOf(o.Smin);
+ const rows=[['Factores kT × kG',`${f(fk)} × ${f(fg)} = ${f(F,3)}`],['Sección por ampacidad',ia<0?'sin sección en tabla':STD[ia]+' mm²'],['Sección por caída de tensión',iv<0?'—':STD[iv]+' mm²'],['Sección por cortocircuito',f(sc,1)+' mm² mín.'],['Sección mínima normativa',o.Smin+' mm²']];
+ if(ia<0||iv<0||ic<0)return{rows:[...rows,['Resultado','Usar conductores en paralelo o mayor sección','bad']]};
+ const i=Math.max(ia,iv,ic,im),S=STD[i],Iz=tab[i]*F,dr=dv(S)/V*100;
+ rows.push(['Sección adoptada (Cu)',S+' mm²','big ok'],['Iz corregida vs. corriente de diseño',`${f(Iz,1)} A ≥ ${f(o.Ic,1)} A`,st(Iz>=o.Ic)],['Caída de tensión real',`${f(dr)} % (máx. ${f(o.lim,1)} %)`,st(dr<=o.lim)]);
+ return{rows,S}}
+function calc(){
+ let v=g('c');if(valid(v)&&v.cos<=1){const th=v.sis==380,I=th?v.P/(Math.sqrt(3)*v.sis*v.cos):v.P/(v.sis*v.cos),In=INOM.find(x=>x>=I);
+  if(!In)out('c',[['Corriente de servicio',f(I)+' A'],['Resultado','Excede circuito terminal: dividir la carga','bad']]);
+  else{const r=cable({...v,three:th,I,Ic:In,Smin:v.tipo=='Alumbrado'?1.5:2.5});
+   out('c',[['Corriente de servicio Ib',f(I)+' A'],['Protección In (termomagnética, curva C)',In+' A',''],...r.rows],(v.tipo=='Enchufes'?'Enchufes: proteger además con diferencial ≤ 30 mA (RIC N°05). ':'')+'Condición Ib ≤ In ≤ Iz; con interruptor normalizado IEC 60898 la condición I₂ ≤ 1,45·Iz queda cubierta. Secciones mínimas: alumbrado 1,5 mm², enchufes y fuerza 2,5 mm² (verificar RIC N°04).')}}
+ v=g('m');if(valid(v)&&v.cos<=1&&v.eta<=1){const th=v.sis==380,P=v.Pm*(v.u=='HP'?745.7:1000),I=th?P/(Math.sqrt(3)*v.sis*v.eta*v.cos):P/(v.sis*v.eta*v.cos),Ic=1.25*I;
+  const r=cable({...v,three:th,I,Ic,Smin:2.5});
+  out('m',[['Corriente nominal In',f(I)+' A'],['Corriente de diseño 1,25·In',f(Ic)+' A'],['Corriente de partida estimada',f(I*v.arr,0)+' A'],['Relé térmico (ajuste)',f(I,1)+' A (clase 10)'],...r.rows],'Protección de cortocircuito: guardamotor o disyuntor curva D/K que no dispare con la partida y proteja al cable según Icc. Confirmar con datos de placa y catálogo del fabricante.')}
+ v=g('t');if(valid(v)){const R1=v.rho/(2*Math.PI*v.Lb)*Math.log(4*v.Lb/(v.d/1000)),eu=v.n<2?1:v.n<4?.85:.75,R=R1/(v.n*eu),Ra=50/(v.Idn/1000);
+  const sa=v.If*Math.sqrt(v.tf)/159,stb=v.Sf<=16?v.Sf:v.Sf<=35?16:v.Sf/2,pe=nx(Math.max(sa,stb,6));
+  out('t',[['Resistencia 1 barra',f(R1)+' Ω'],['Resistencia del sistema (estimada)',f(R)+' Ω',''],['R ≤ R máx. de proyecto',`${f(R)} ≤ ${f(v.Rmax,1)} Ω`,st(R<=v.Rmax)],['Ra ≤ 50 V / IΔn (esquema TT)',`${f(R)} ≤ ${f(Ra,0)} Ω`,st(R<=Ra)],['PE por cortocircuito',f(sa,1)+' mm² (k=159)'],['PE por tabla de la sección de fase',f(stb,1)+' mm²'],['Conductor de puesta a tierra',pe+' mm² Cu','big ok']],'Resistencia calculada con factor de utilización 0,85 (2–3 barras) o 0,75 (≥4) y separación ≥ 2 veces el largo. La medición con telurómetro en terreno es obligatoria para la puesta en servicio (RIC N°19).')}
+ v=g('g');if(valid(v)){const Rg=v.rho*(1/v.L+1/Math.sqrt(20*v.A)*(1+1/(1+v.h*Math.sqrt(20/v.A)))),Cs=1-.09*(1-v.rho/v.rhos)/(2*v.hs+.09),kk=v.w==70?.157:.116;
+  const Et=(1000+1.5*Cs*v.rhos)*kk/Math.sqrt(v.t),Es=(1000+6*Cs*v.rhos)*kk/Math.sqrt(v.t),Ig=v.icc*1000*v.sf*v.df,G=Ig*Rg,Ac=v.icc*7*Math.sqrt(v.t)*.5067;
+  out('g',[['Resistencia de malla Rg (Sverak)',f(Rg)+' Ω'],['Corriente a tierra Ig',f(Ig,0)+' A'],['GPR = Ig·Rg',f(G,0)+' V'],['Cs',f(Cs,3)],['Tensión de contacto tolerable',f(Et,0)+' V'],['Tensión de paso tolerable',f(Es,0)+' V'],['GPR ≤ tensión de contacto',G<=Et?'Cumple':'Verificar Em y Es',G<=Et?'ok':'wr'],['Conductor de malla (Cu, 1083 °C)',f(Ac,1)+' mm² → '+nx(Math.max(Ac,50))+' mm² adoptado','big ok']],'Si GPR supera la tensión de contacto tolerable, calcular Em y Es con la geometría real (IEEE 80, cap. 16) y comparar con los valores tolerables. Se adopta 50 mm² como mínimo de criterio de proyecto.')}
+ v=g('x');if(valid(v)){const S=v.icc*1000*Math.sqrt(v.t)/v.k;out('x',[['Sección mínima teórica',f(S,1)+' mm²'],['Sección normalizada',nx(S)+' mm²','big ok']],'S = Icc·√t / k. Verificar además ampacidad por tipo de instalación y caída de tensión del alimentador.')}
+}
+function show(id){document.querySelectorAll('.panel').forEach(p=>p.style.display=p.id=='p_'+id?'block':'none');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id==id));try{localStorage.setItem('ric_tab',id)}catch(e){}}
+TABS.forEach(([id,nm,ti,fl])=>{
+ const b=document.createElement('button');b.textContent=nm;b.dataset.id=id;b.onclick=()=>show(id);$('nav').appendChild(b);
+ const fields=fl.map(([k,l,d])=>{const i=id+'_'+k;if(Array.isArray(d))return`<div><label>${l}</label><select id="${i}">${d.map(o=>Array.isArray(o)?`<option value="${o[0]}">${o[1]}</option>`:`<option>${o}</option>`).join('')}</select></div>`;return`<div><label>${l}</label><input id="${i}" type="number" inputmode="decimal" step="any" value="${d}"></div>`}).join('');
+ $('panels').insertAdjacentHTML('beforeend',`<div class="card panel" id="p_${id}" style="display:none"><h2>${ti}</h2><div class="g">${fields}</div><div id="r_${id}"></div></div>`)});
+function save(){try{const o={};document.querySelectorAll('input,select').forEach(e=>o[e.id]=e.value);localStorage.setItem('ric_v1',JSON.stringify(o))}catch(e){}}
+try{const o=JSON.parse(localStorage.getItem('ric_v1')||'{}');for(const k in o){const e=$(k);if(e)e.value=o[k]}}catch(e){}
+document.addEventListener('input',()=>{save();calc()});
+let t0='c';try{t0=localStorage.getItem('ric_tab')||'c'}catch(e){}
+show($('p_'+t0)?t0:'c');calc();
 </script>
-
 </body>
 </html>
