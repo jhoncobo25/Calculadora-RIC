@@ -2,37 +2,48 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Calc RIC">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Calculadora Eléctrica RIC · Chile</title>
 <style>
-:root{--bg:#f3f5f9;--card:#fff;--tx:#14213d;--mu:#5b6678;--bd:#d8dee9;--ac:#0b6fd6;--in:#f7f9fc;--ok:#137a3a;--okb:#e3f5ea;--bad:#b3261e;--badb:#fde8e6;--wr:#9a5b00;--wrb:#fff1d6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--card:#18223a;--tx:#e6ebf5;--mu:#9aa6bd;--bd:#2a3858;--ac:#4cb3ff;--in:#0f1830;--ok:#6fdc97;--okb:#12301f;--bad:#ff8a80;--badb:#3a1a18;--wr:#ffc266;--wrb:#3a2b0e}}
-:root[data-theme="dark"]{--bg:#0f1624;--card:#18223a;--tx:#e6ebf5;--mu:#9aa6bd;--bd:#2a3858;--ac:#4cb3ff;--in:#0f1830;--ok:#6fdc97;--okb:#12301f;--bad:#ff8a80;--badb:#3a1a18;--wr:#ffc266;--wrb:#3a2b0e}
-html,body{height:auto}body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:14px}
-.w{max-width:680px;margin:0 auto}h1{font-size:1.25rem;margin:4px 0}.sub{color:var(--mu);font-size:.8rem;margin:0 0 10px}
-.pj{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}nav button{flex:none;padding:9px 12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font-size:.82rem;cursor:pointer}
-nav button.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px}
-.card h2{font-size:1rem;margin:0 0 10px}.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+:root{--bg:#121826;--card:#1b2438;--accent:#00d2ff;--accent-bt:#4caf50;--accent-mt:#ff9800;--text:#e0e6ed;--border:#2a364f;--mu:#9aa6bd}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:16px;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}
+.w{max-width:600px;margin:0 auto}
+h1{text-align:center;font-size:1.3rem;color:var(--accent);margin:0 0 4px}
+.sub{text-align:center;color:var(--mu);font-size:.75rem;margin:0 0 12px}
+.badge{font-size:.75rem;background:#2a364f;padding:2px 6px;border-radius:4px;color:var(--text)}
+.menu-level{display:flex;gap:8px;margin-bottom:12px}
+.btn-level{flex:1;padding:12px;border:2px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;font-weight:bold;font-size:.95rem;cursor:pointer;text-align:center}
+.btn-level.active-bt{border-color:var(--accent-bt);background:#1b3323;color:#81c784}
+.btn-level.active-mt{border-color:var(--accent-mt);background:#3b2814;color:#ffb74d}
+.subnav{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.subnav button{flex:1;min-width:100px;padding:8px;background:#0d131f;border:1px solid var(--border);color:var(--text);border-radius:6px;cursor:pointer;font-size:.8rem;font-weight:500}
+.subnav button.on{background:var(--accent);color:#000;font-weight:bold}
+.pj{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px}
+.card h2{font-size:1rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:6px;margin:0 0 12px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:480px){.g,.pj{grid-template-columns:1fr}}
-label{display:block;font-size:.75rem;color:var(--mu);margin-bottom:3px}
-input,select{width:100%;box-sizing:border-box;padding:9px;border:1px solid var(--bd);border-radius:7px;background:var(--in);color:var(--tx);font-size:1rem}
-.r{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-bottom:1px solid var(--bd);font-size:.88rem}.r b{text-align:right}
-.r.ok{background:var(--okb);color:var(--ok)}.r.bad{background:var(--badb);color:var(--bad)}.r.wr{background:var(--wrb);color:var(--wr)}.r.big b{font-size:1.05rem}
-.n{font-size:.76rem;color:var(--mu);line-height:1.45;margin:8px 2px 0}
-.res{margin-top:12px;border:1px solid var(--bd);border-radius:8px;overflow:hidden}
-.fo{font-size:.74rem;color:var(--mu);line-height:1.5}.fo b{color:var(--tx)}
-.bt{padding:9px 12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;cursor:pointer;font-size:.82rem}
-@media print{nav,.bt,.no{display:none}.panel{display:block!important}body{background:#fff;color:#000}}
+label{display:block;font-size:.85rem;margin-bottom:4px;opacity:.85}
+input,select{width:100%;padding:10px;border-radius:6px;border:1px solid var(--border);background:#0d131f;color:#fff;box-sizing:border-box;font-size:1rem}
+.res{margin-top:16px;background:#0d131f;border-left:4px solid var(--accent);border-radius:4px;overflow:hidden}
+.r{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:.9rem;line-height:1.4}.r b{text-align:right}
+.r.ok{background:#12301f;color:#6fdc97}.r.bad{background:#3a1a18;color:#ff8a80}.r.wr{background:#3a2b0e;color:#ffc266}.r.big b{font-size:1.05rem}
+.n{font-size:.76rem;color:var(--mu);line-height:1.45;margin:10px 2px 0}
+.fo{font-size:.74rem;color:var(--mu);line-height:1.5}.fo b{color:var(--text)}
+.bt{width:100%;padding:12px;background:var(--accent);color:#000;border:none;border-radius:6px;font-weight:bold;font-size:1rem;cursor:pointer}
+@media print{.menu-level,.subnav,.no{display:none}.panel{display:block!important}body{background:#fff;color:#000}}
 </style>
 </head>
 <body>
 <div class="w">
-<h1>Calculadora Eléctrica RIC</h1>
+<h1>Calculadora Eléctrica <span class="badge">RIC SEC</span></h1>
 <p class="sub">Chile · Pliegos Técnicos Normativos RIC (SEC) · IEC 60364-5-52 · IEEE Std 80</p>
 <div class="pj"><div><label>Proyecto</label><input id="pj" type="text" placeholder="Nombre del proyecto"></div><div><label>Calculista / Instalador</label><input id="cl" type="text" placeholder="Nombre y clase de licencia"></div></div>
-<nav id="nav"></nav>
+<div class="menu-level"><button id="btn-bt" class="btn-level active-bt" onclick="show('c')">Baja Tensión (BT)</button><button id="btn-mt" class="btn-level" onclick="show('g')">Media / Alta Tensión</button></div>
+<div id="sub-bt" class="subnav"></div><div id="sub-mt" class="subnav" style="display:none"></div>
 <div id="panels"></div>
 <div class="card fo no"><button class="bt" onclick="print()">Imprimir memoria de cálculo</button></div>
 <div class="card fo"><b>Marco normativo de referencia.</b> RIC N°01 Empalmes · N°02 Tableros · N°03 Alimentadores y demanda · N°04 Conductores, materiales y canalizaciones · N°05 Protección contra tensiones peligrosas y descargas · N°06 Puesta a tierra y enlace equipotencial · N°18 Presentación de proyectos (memoria de cálculo, caídas de tensión y diseño de tierra) · N°19 Puesta en servicio.<br><br><b>Alcance y límites.</b> Herramienta de apoyo al diseño. Las ampacidades, factores de corrección y límites provienen de tablas referenciales (IEC 60364-5-52) y deben contrastarse con la edición vigente del pliego aplicable. Los valores de resistencia de tierra y la malla MT requieren medición en terreno y validación de un profesional habilitado ante la SEC. No reemplaza el proyecto firmado ni la declaración TE.</div>
@@ -84,9 +95,9 @@ function calc(){
   out('g',[['Resistencia de malla Rg (Sverak)',f(Rg)+' Ω'],['Corriente a tierra Ig',f(Ig,0)+' A'],['GPR = Ig·Rg',f(G,0)+' V'],['Cs',f(Cs,3)],['Tensión de contacto tolerable',f(Et,0)+' V'],['Tensión de paso tolerable',f(Es,0)+' V'],['GPR ≤ tensión de contacto',G<=Et?'Cumple':'Verificar Em y Es',G<=Et?'ok':'wr'],['Conductor de malla (Cu, 1083 °C)',f(Ac,1)+' mm² → '+nx(Math.max(Ac,50))+' mm² adoptado','big ok']],'Si GPR supera la tensión de contacto tolerable, calcular Em y Es con la geometría real (IEEE 80, cap. 16) y comparar con los valores tolerables. Se adopta 50 mm² como mínimo de criterio de proyecto.')}
  v=g('x');if(valid(v)){const S=v.icc*1000*Math.sqrt(v.t)/v.k;out('x',[['Sección mínima teórica',f(S,1)+' mm²'],['Sección normalizada',nx(S)+' mm²','big ok']],'S = Icc·√t / k. Verificar además ampacidad por tipo de instalación y caída de tensión del alimentador.')}
 }
-function show(id){document.querySelectorAll('.panel').forEach(p=>p.style.display=p.id=='p_'+id?'block':'none');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id==id));try{localStorage.setItem('ric_tab',id)}catch(e){}}
+function show(id){const mt=id=='g'||id=='x';$('btn-bt').className='btn-level '+(mt?'':'active-bt');$('btn-mt').className='btn-level '+(mt?'active-mt':'');$('sub-bt').style.display=mt?'none':'flex';$('sub-mt').style.display=mt?'flex':'none';document.querySelectorAll('.panel').forEach(p=>p.style.display=p.id=='p_'+id?'block':'none');document.querySelectorAll('.subnav button').forEach(b=>b.classList.toggle('on',b.dataset.id==id));try{localStorage.setItem('ric_tab',id)}catch(e){}}
 TABS.forEach(([id,nm,ti,fl])=>{
- const b=document.createElement('button');b.textContent=nm;b.dataset.id=id;b.onclick=()=>show(id);$('nav').appendChild(b);
+ const b=document.createElement('button');b.textContent=nm;b.dataset.id=id;b.onclick=()=>show(id);$(id=='g'||id=='x'?'sub-mt':'sub-bt').appendChild(b);
  const fields=fl.map(([k,l,d])=>{const i=id+'_'+k;if(Array.isArray(d))return`<div><label>${l}</label><select id="${i}">${d.map(o=>Array.isArray(o)?`<option value="${o[0]}">${o[1]}</option>`:`<option>${o}</option>`).join('')}</select></div>`;return`<div><label>${l}</label><input id="${i}" type="number" inputmode="decimal" step="any" value="${d}"></div>`}).join('');
  $('panels').insertAdjacentHTML('beforeend',`<div class="card panel" id="p_${id}" style="display:none"><h2>${ti}</h2><div class="g">${fields}</div><div id="r_${id}"></div></div>`)});
 function save(){try{const o={};document.querySelectorAll('input,select').forEach(e=>o[e.id]=e.value);localStorage.setItem('ric_v1',JSON.stringify(o))}catch(e){}}
