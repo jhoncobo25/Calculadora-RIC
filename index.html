@@ -80,23 +80,33 @@ function cable(o){
  rows.push(['Sección adoptada (Cu)',S+' mm²','big ok'],['Iz corregida vs. corriente de diseño',`${f(Iz,1)} A ≥ ${f(o.Ic,1)} A`,st(Iz>=o.Ic)],['Caída de tensión real',`${f(dr)} % (máx. ${f(o.lim,1)} %)`,st(dr<=o.lim)]);
  return{rows,S}}
 function calc(){
- let v=g('c');if(valid(v)&&v.cos<=1){const th=v.sis==380,I=th?v.P/(Math.sqrt(3)*v.sis*v.cos):v.P/(v.sis*v.cos);
+ let v=g('c');
+ if(valid(v)&&v.cos<=1){
+  const th=v.sis==380;
+  const I=th?v.P/(Math.sqrt(3)*v.sis*v.cos):v.P/(v.sis*v.cos);
   let In;
-  if(v.tipo=='Alumbrado'){
-   In=INOM.find(x=>x*0.9>=I);
+  if(v.tipo=='Alumbrado'||v.tipo=='Enchufes'){
+   In=INOM.find(x=>(x*0.90)>=I);
   }else{
    In=INOM.find(x=>x>=I);
   }
-  if(!In)out('c',[['Corriente de servicio',f(I)+' A'],['Resultado','Excede circuito terminal: dividir la carga','bad']]);
-  else{
+  if(!In){
+   out('c',[
+    ['Corriente de servicio Ib',f(I)+' A'],
+    ['Resultado','Excede circuito terminal: dividir la carga','bad']
+   ]);
+  }else{
    const r=cable({...v,three:th,I,Ic:In,Smin:v.tipo=='Alumbrado'?1.5:2.5});
-   const disyuntorText=v.tipo=='Alumbrado'?`${In} A (Carga máx 90%: ${f(In*0.9,1)} A)`:`${In} A`;
+   const capMax90=f(In*0.90,1);
+   const disyuntorText=(v.tipo=='Alumbrado'||v.tipo=='Enchufes')?`${In} A (Carga máx 90%: ${capMax90} A)`:`${In} A`;
    out('c',[
     ['Corriente de servicio Ib',f(I)+' A'],
     ['Protección Disyuntor (curva C)',disyuntorText,''],
-    ['Protección Diferencial (obligatorio)',`2x${In} A / 30 mA (RIC N°05)`,`ok`],
+    ['Protección Diferencial (por circuito)',`2x${In} A / 30 mA (RIC N°05)`,`ok`],
     ...r.rows
-   ],(v.tipo=='Alumbrado'?'<b>Alumbrado (RIC N°10):</b> Limitado al 90% de capacidad del disyuntor. ':'')+'<b>Protección (RIC N°05/02):</b> Cada circuito debe contar individualmente con disyuntor y protector diferencial ≤ 30 mA. Condición Ib ≤ In ≤ Iz. Secciones mínimas: alumbrado 1,5 mm², enchufes y fuerza 2,5 mm² (RIC N°04).')}}
+   ],`<b>Criterio de diseño (RIC N°10 / N°05):</b> Para ${v.tipo.toLowerCase()}, la carga máxima proyectada no supera el 90% del disyuntor nominal (${capMax90} A máx). Cada circuito debe incluir individualmente su disyuntor y protector diferencial ≤ 30 mA.`);
+  }
+ }
  v=g('m');if(valid(v)&&v.cos<=1&&v.eta<=1){const th=v.sis==380,P=v.Pm*(v.u=='HP'?745.7:1000),I=th?P/(Math.sqrt(3)*v.sis*v.eta*v.cos):P/(v.sis*v.eta*v.cos),Ic=1.25*I;
   const r=cable({...v,three:th,I,Ic,Smin:2.5});
   out('m',[['Corriente nominal In',f(I)+' A'],['Corriente de diseño 1,25·In',f(Ic)+' A'],['Corriente de partida estimada',f(I*v.arr,0)+' A'],['Relé térmico (ajuste)',f(I,1)+' A (clase 10)'],...r.rows],'Protección de cortocircuito: guardamotor o disyuntor curva D/K que no dispare con la partida y proteja al cable según Icc. Confirmar con datos de placa y catálogo del fabricante.')}
